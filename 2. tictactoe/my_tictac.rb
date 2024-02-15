@@ -1,5 +1,6 @@
 class MyTictac
   attr_accessor :board
+  @@turn_count = 1
   def initialize 
     @board = Array.new(3) {Array.new(3, '-')}
   end 
@@ -20,21 +21,20 @@ class MyTictac
   def get_valid_index_input
     input = nil
     loop do
-      print "Please enter a valid input in the range 1-9"
+      print "Please enter a valid input in the range 1-9: "
       input = gets.chomp
       if valid_input?(input)
-        break
+        row_index, col_index = to_2Dindex(input.to_i);
+        if @board[row_index][col_index] == '-'
+          print "#{row_index}  #{col_index}"
+          break
+        end
       end
       puts "Invalid input. Please enter a number between 1 and 9."
     end
     input = input.to_i
-    row_index, col_index = to_2Dindex(input);
-    print "#{row_index}  #{col_index}"
   end
-  def index_input
-    input = gets.chomp.to_i   
-    
-  end
+ 
   def to_2Dindex(input)
     case input 
     when 1
