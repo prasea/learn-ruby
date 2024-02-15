@@ -1,0 +1,1 @@
+print "#{row_index}  #{col_index}"
