@@ -95,10 +95,12 @@ class MyTictac
 
   def play_game
     puts 
+    @board = Array.new(3) {Array.new(3, '-')}
     display_board(@board)
     puts 
-
+    
     until @@turn_count >= 10 do
+      # puts @@turn_count
       if @@turn_count.odd?
         puts "Player #{@player_one} turn's : "
       else 
@@ -117,6 +119,8 @@ class MyTictac
     if @@turn_count > 9
       puts "Its draw"
     end
+    @@turn_count = 1
+    play_again? ? play_game : return
   end
   def check_win(symbol)
     # Check rows
@@ -138,7 +142,15 @@ class MyTictac
 
     false
   end
-  
+  def play_again?
+    loop do
+      print "Do you want to play again? (yes/no): "
+      answer = gets.chomp.downcase
+      return true if answer == "yes"
+      return false if answer == "no"
+      puts "Invalid input. Please enter 'yes' or 'no'."
+    end
+  end
 end 
 
 my_tictac = MyTictac.new 
