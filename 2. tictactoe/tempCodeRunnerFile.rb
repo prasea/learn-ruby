@@ -1,1 +1,3 @@
-print "#{row_index}  #{col_index}"
+if @@turn_count > 9
+      puts "Its draw"
+    end

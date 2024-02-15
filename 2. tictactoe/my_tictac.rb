@@ -2,6 +2,8 @@ class MyTictac
   attr_accessor :board
   @@turn_count = 1
   def initialize 
+    @player_one = 'O'
+    @player_two = 'X'
     @board = Array.new(3) {Array.new(3, '-')}
   end
 
@@ -97,9 +99,44 @@ class MyTictac
     puts 
 
     until @@turn_count >= 10 do
+      if @@turn_count.odd?
+        puts "Player #{@player_one} turn's : "
+      else 
+        puts "Player #{@player_two} turn's : "      
+      end
       player_turn(@@turn_count)
       display_board(@board)
+      if check_win('X')
+        puts "Player X wins!"
+        break
+      elsif check_win('O')
+        puts "Player O wins!"
+        break
+      end
     end
+    if @@turn_count > 9
+      puts "Its draw"
+    end
+  end
+  def check_win(symbol)
+    # Check rows
+    @board.each do |row|
+      return true if row.all? { |cell| cell == symbol }
+    end
+
+    # Check columns
+    @board.transpose.each do |col|
+      return true if col.all? { |cell| cell == symbol }
+    end
+
+    # Check diagonals
+    diagonal1 = [@board[0][0], @board[1][1], @board[2][2]]
+    diagonal2 = [@board[0][2], @board[1][1], @board[2][0]]
+
+    return true if diagonal1.all? { |cell| cell == symbol }
+    return true if diagonal2.all? { |cell| cell == symbol }
+
+    false
   end
   
 end 
