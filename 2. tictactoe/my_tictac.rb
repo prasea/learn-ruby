@@ -13,11 +13,27 @@ class MyTictac
     end
   end
 
-  def index_input
-    puts "Please enter a valid input in the range 1-9"
-    input = gets.chomp.to_i   
+  def valid_input?(input)
+    input.match?(/^[1-9]$/)
+  end
+  
+  def get_valid_index_input
+    input = nil
+    loop do
+      print "Please enter a valid input in the range 1-9"
+      input = gets.chomp
+      if valid_input?(input)
+        break
+      end
+      puts "Invalid input. Please enter a number between 1 and 9."
+    end
+    input = input.to_i
     row_index, col_index = to_2Dindex(input);
     print "#{row_index}  #{col_index}"
+  end
+  def index_input
+    input = gets.chomp.to_i   
+    
   end
   def to_2Dindex(input)
     case input 
@@ -53,8 +69,9 @@ class MyTictac
     end 
     return row_index, col_index
   end
+  
 end 
 
 my_tictac = MyTictac.new 
 my_tictac.display_board
-my_tictac.index_input
+my_tictac.get_valid_index_input
