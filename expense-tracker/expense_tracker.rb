@@ -13,6 +13,7 @@ class ExpenseTracker
 
   def initialize
     @expense = Expense.new(GetConnection.establish_database_connection)
+    @expense.create_table
   end
   
   def display_menu 
@@ -106,17 +107,26 @@ class ExpenseTracker
     # puts expense.all.inspect
   end
 
+  def get_total_expense_amount 
+    total_expense_amount = @expense.sum
+    total_expense_amount[0]['total_item_price']
+  end
+
   def read_expenses
     # conn = GetConnection.establish_database_connection
     # expense = Expense.new(conn)
     expenses = @expense.all
-    print ["ID", "Name", "Description", "Amount"]   
-    puts 
+
+    puts "Expense ID | Expense Date | Expense Item        | Expense Price"
+    puts "-------------------------------------------------------"
     expenses.each do |expense|
-      print expense
-      puts
-    end 
+      expense_id, expense_date, expense_item, expense_price = expense
+      printf("%-11s| %-13s| %-20s| Rs. %s\n", expense_id, expense_date, expense_item, expense_price)
+    end    
+    puts "-------------------------------------------------------"
+    puts "The total amount spent is Rs. #{get_total_expense_amount}"
   end
+
 
   def get_valid_id 
    #validate expense item id 

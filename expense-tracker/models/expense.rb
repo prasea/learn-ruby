@@ -28,6 +28,10 @@ class Expense
     count > 0
   end
 
+  def sum
+    @conn.exec("SELECT SUM(item_price) AS total_item_price FROM expenses;")
+  end
+
   def all
     @conn.exec('SELECT * FROM expenses').values
   end
