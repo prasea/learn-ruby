@@ -27,25 +27,25 @@ def display_menu
   puts "5. Exit"
 end 
 
-def valid_input?(input)
-  input.match?(/^[1-5]$/)
+def valid_choice?(choice)
+  choice.match?(/^[1-5]$/)
 end
 
 def get_valid_choice
-  input = nil
+  choice = nil
   loop do
     print "Enter a valid choice in range (1-5)"
-    input = gets.chomp
-    if valid_input?(input)
-      input = input.to_i
-      if input >= 1 && input <=5
+    choice = gets.chomp
+    if valid_choice?(choice)
+      choice = choice.to_i
+      if choice >= 1 && choice <=5
         break
       end
     end
-    puts "Invalid input. Please enter a number between 1 and 5."
+    puts "Invalid choice. Please enter a number between 1 and 5."
   end
-  input = input.to_i
-  return input
+  choice = choice.to_i
+  return choice
 end
 
 display_menu
