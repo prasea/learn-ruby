@@ -1,5 +1,6 @@
 require_relative 'get_connection.rb'
 require_relative './models/expense.rb'
+require 'date'
 
 # conn = establish_database_connection
 # results = conn.exec('SELECT * FROM expenses')
@@ -38,10 +39,58 @@ def get_valid_choice
   return choice
 end
 
+def valid_amount?(amount_str)
+  # return false if amount_str == "0"
+  /^\d+(\.\d{1,2})?$/.match?(amount_str)
+end
+
 def create_expense 
   conn = GetConnection.establish_database_connection
+  puts "Enter expense details"
+
+  # Validate date input
+  expense_date = nil
+  loop do
+    print "Enter the date when the expense was made (YYYY-MM-DD):  "
+    str_date = gets.chomp
+    begin
+      expense_date = Date.parse(str_date)
+      break if expense_date <= Date.today
+      puts "Invalid date. Future dates are not allowed."
+    rescue ArgumentError
+      puts "Invalid date format. Please enter the date in YYYY-MM-DD format."
+    end
+  end
+
+  # Validate amount input
+  expense_amount = nil
+  loop do
+    print "Enter the expense amount:  "
+    str_amount = gets.chomp
+    if str_amount == "0"
+      puts "Invalid amount. Amount cannot be 0."
+    elsif valid_amount?(str_amount)
+      expense_amount = str_amount.to_f
+      break
+    else
+      puts "Invalid amount. Please enter a valid number."
+    end
+  end
+
+  # Validate item input
+  expense_item = nil 
+  loop do 
+    print "Enter the expense item:  "
+    expense_item = gets.chomp
+    if !expense_item.nil? && !expense_item.strip.empty?
+      break
+    else 
+      puts "Invalid expense item name. Please enter a valid name"
+    end
+  end
+
   expense = Expense.new(conn)
-  expense.create('2000-01-01', 'Bara', 100)
+  expense.create(expense_date, expense_item, expense_amount)
   puts expense.all.inspect
 end
 
