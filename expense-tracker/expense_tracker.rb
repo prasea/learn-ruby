@@ -116,32 +116,35 @@ class ExpenseTracker
     end 
   end
 
+  def get_valid_id 
+   #validate expense item id 
+   user_input_id = nil 
+   loop do 
+     loop do
+       print "Enter the existing expense item id: "
+       user_input_id = gets.chomp
+     
+       # Validate if user_input_id is an integer
+       begin
+         Integer(user_input_id)
+         break
+       rescue ArgumentError
+         puts "Invalid expense id. Please enter a valid integer id."
+       end
+     end
+     if @expense.id_exists?(user_input_id)
+       break 
+     else
+       puts "Invalid expense id. Please enter existing valid item id"
+     end
+   end
+   user_input_id
+  end
+
   def update_expense
     # conn = GetConnection.establish_database_connection
     # expense = Expense.new(conn)  
-
-    #validate expense item id 
-    user_input_id = nil 
-    loop do 
-      loop do
-        print "Enter the existing expense item id: "
-        user_input_id = gets.chomp
-      
-        # Validate if user_input_id is an integer
-        begin
-          Integer(user_input_id)
-          break
-        rescue ArgumentError
-          puts "Invalid expense id. Please enter a valid integer id."
-        end
-      end
-      if @expense.id_exists?(user_input_id)
-        break 
-      else
-        puts "Invalid expense id. Please enter existing valid item id"
-      end
-    end
-    
+    user_input_id = get_valid_id
     new_expense_date, new_expense_item, new_expense_amount = get_valid_input
     @expense.update(user_input_id, new_expense_date, new_expense_item, new_expense_amount)
   end 
@@ -149,29 +152,7 @@ class ExpenseTracker
   def delete_expense 
     # conn = GetConnection.establish_database_connection
     # expense = Expense.new(conn)  
-
-    #validate expense item id to be deted
-    user_input_id = nil 
-    loop do 
-      loop do
-        print "Enter the existing expense item id: "
-        user_input_id = gets.chomp
-      
-        # Validate if user_input_id is an integer
-        begin
-          Integer(user_input_id)
-          break
-        rescue ArgumentError
-          puts "Invalid expense id. Please enter a valid integer id."
-        end
-      end
-      if @expense.id_exists?(user_input_id)
-        break 
-      else
-        puts "Invalid expense id. Please enter existing valid item id"
-      end
-    end
-
+    user_input_id = get_valid_id
     @expense.delete(user_input_id)
   end 
 
