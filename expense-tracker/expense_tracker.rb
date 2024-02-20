@@ -91,9 +91,20 @@ def create_expense
 
   expense = Expense.new(conn)
   expense.create(expense_date, expense_item, expense_amount)
-  puts expense.all.inspect
+  # puts expense.all.inspect
 end
 
+def read_expenses
+  conn = GetConnection.establish_database_connection
+  expense = Expense.new(conn)
+  expenses = expense.all
+  print ["ID", "Name", "Description", "Amount"]   
+  puts 
+  expenses.each do |expense|
+    print expense
+    puts
+  end 
+end
 
 def handle_user_choice(user_choice) 
   case user_choice
@@ -102,6 +113,7 @@ def handle_user_choice(user_choice)
     create_expense
   when 2
     puts "Read Expenses option selected."
+    read_expenses
   when 3
     puts "Update Expense option selected."
   when 4
@@ -114,6 +126,8 @@ def handle_user_choice(user_choice)
   end
 end
 
-display_menu
-user_choice = get_valid_choice
-handle_user_choice(user_choice)
+loop do 
+  display_menu
+  user_choice = get_valid_choice
+  handle_user_choice(user_choice)
+end 
