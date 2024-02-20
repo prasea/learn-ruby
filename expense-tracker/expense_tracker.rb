@@ -11,6 +11,9 @@ require 'date'
 
 class ExpenseTracker 
 
+  def initialize
+    @expense = Expense.new(GetConnection.establish_database_connection)
+  end
   def display_menu 
     puts "Make your choice for expense tracker"
     puts "1. Add new expense"
@@ -95,16 +98,16 @@ class ExpenseTracker
 
     expense_date, expense_item, expense_amount = get_valid_input
 
-    conn = GetConnection.establish_database_connection
-    expense = Expense.new(conn)
-    expense.create(expense_date, expense_item, expense_amount)
+    # conn = GetConnection.establish_database_connection
+    # expense = Expense.new(conn)
+    @expense.create(expense_date, expense_item, expense_amount)
     # puts expense.all.inspect
   end
 
   def read_expenses
-    conn = GetConnection.establish_database_connection
-    expense = Expense.new(conn)
-    expenses = expense.all
+    # conn = GetConnection.establish_database_connection
+    # expense = Expense.new(conn)
+    expenses = @expense.all
     print ["ID", "Name", "Description", "Amount"]   
     puts 
     expenses.each do |expense|
@@ -114,8 +117,8 @@ class ExpenseTracker
   end
 
   def update_expense
-    conn = GetConnection.establish_database_connection
-    expense = Expense.new(conn)  
+    # conn = GetConnection.establish_database_connection
+    # expense = Expense.new(conn)  
 
     #validate expense item id 
     user_input_id = nil 
@@ -132,7 +135,7 @@ class ExpenseTracker
           puts "Invalid expense id. Please enter a valid integer id."
         end
       end
-      if expense.id_exists?(user_input_id)
+      if @expense.id_exists?(user_input_id)
         break 
       else
         puts "Invalid expense id. Please enter existing valid item id"
@@ -140,12 +143,12 @@ class ExpenseTracker
     end
     
     new_expense_date, new_expense_item, new_expense_amount = get_valid_input
-    expense.update(user_input_id, new_expense_date, new_expense_item, new_expense_amount)
+    @expense.update(user_input_id, new_expense_date, new_expense_item, new_expense_amount)
   end 
 
   def delete_expense 
-    conn = GetConnection.establish_database_connection
-    expense = Expense.new(conn)  
+    # conn = GetConnection.establish_database_connection
+    # expense = Expense.new(conn)  
 
     #validate expense item id to be deted
     user_input_id = nil 
@@ -162,14 +165,14 @@ class ExpenseTracker
           puts "Invalid expense id. Please enter a valid integer id."
         end
       end
-      if expense.id_exists?(user_input_id)
+      if @expense.id_exists?(user_input_id)
         break 
       else
         puts "Invalid expense id. Please enter existing valid item id"
       end
     end
 
-    expense.delete(user_input_id)
+    @expense.delete(user_input_id)
   end 
 
   def handle_user_choice(user_choice) 
