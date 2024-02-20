@@ -18,6 +18,9 @@ class Expense
     [new_date, new_name, new_price, id])
   end
 
+  def delete(id)
+    @conn.exec_params("DELETE FROM expenses WHERE id = $1", [id])
+  end
 
   def id_exists?(id)
     result = @conn.exec_params("SELECT COUNT(*) FROM expenses WHERE id = $1", [id])
