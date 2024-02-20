@@ -14,6 +14,7 @@ class ExpenseTracker
   def initialize
     @expense = Expense.new(GetConnection.establish_database_connection)
   end
+  
   def display_menu 
     puts "Make your choice for expense tracker"
     puts "1. Add new expense"
@@ -64,6 +65,18 @@ class ExpenseTracker
         end
       end
   
+      # Validate item input
+      expense_item = nil 
+      loop do 
+        print "Enter the expense item:  "
+        expense_item = gets.chomp
+        if !expense_item.nil? && !expense_item.strip.empty?
+          break
+        else 
+          puts "Invalid expense item name. Please enter a valid name"
+        end
+      end
+
       # Validate amount input
       expense_amount = nil
       loop do
@@ -78,18 +91,7 @@ class ExpenseTracker
           puts "Invalid amount. Please enter a valid number."
         end
       end
-  
-      # Validate item input
-      expense_item = nil 
-      loop do 
-        print "Enter the expense item:  "
-        expense_item = gets.chomp
-        if !expense_item.nil? && !expense_item.strip.empty?
-          break
-        else 
-          puts "Invalid expense item name. Please enter a valid name"
-        end
-      end
+
       return expense_date, expense_item, expense_amount
   end
 
