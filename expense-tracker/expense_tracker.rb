@@ -1,14 +1,5 @@
-require_relative 'database_connector.rb'
-def establish_database_connection
-  db = DatabaseConnector.new('expense-tracker', 'postgres', 'password')
-  db.connect
-  if db.connection
-    return db.connection
-  else
-    puts "No database connection established."
-    return nil
-  end
-end
+require_relative 'get_connection.rb'
+require_relative './models/expense.rb'
 
 # conn = establish_database_connection
 # results = conn.exec('SELECT * FROM expenses')
@@ -16,7 +7,6 @@ end
 #   p row['item_name']
 # end
 # conn.close
-
 
 def display_menu 
   puts "Make your choice for expense tracker"
@@ -48,50 +38,33 @@ def get_valid_choice
   return choice
 end
 
-
-class Expense
-  def initialize(conn)
-    @conn = conn
-  end
-
-  def create_table
-    @conn.exec('CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT)')
-  end
-
-  def create(date, name, price)
-    @conn.exec_params('INSERT INTO expenses (date, item_name, item_price) VALUES ($1, $2, $3)', [date, name, price])
-  end
-
-  def all
-    @conn.exec('SELECT * FROM expenses').values
-  end
-end
-
-
 def create_expense 
-  conn = establish_database_connection
+  conn = GetConnection.establish_database_connection
   expense = Expense.new(conn)
   expense.create('2000-01-01', 'Bara', 100)
   puts expense.all.inspect
 end
 
 
+def handle_user_choice(user_choice) 
+  case user_choice
+  when 1
+    puts "Create Expense option selected."
+    create_expense
+  when 2
+    puts "Read Expenses option selected."
+  when 3
+    puts "Update Expense option selected."
+  when 4
+    puts "Delete Expense option selected."
+  when 5
+    puts "Exiting..."
+    exit
+  else
+    puts "Invalid choice. Please enter a number from 1 to 5."
+  end
+end
+
 display_menu
 user_choice = get_valid_choice
-
-case user_choice
-when 1
-  puts "Create Expense option selected."
-  create_expense
-when 2
-  puts "Read Expenses option selected."
-when 3
-  puts "Update Expense option selected."
-when 4
-  puts "Delete Expense option selected."
-when 5
-  puts "Exiting..."
-  exit
-else
-  puts "Invalid choice. Please enter a number from 1 to 5."
-end
+handle_user_choice(user_choice)
