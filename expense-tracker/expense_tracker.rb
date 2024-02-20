@@ -46,49 +46,54 @@ class ExpenseTracker
     /^\d+(\.\d{1,2})?$/.match?(amount_str)
   end
 
+  def get_valid_input
+      # Validate date input
+      expense_date = nil
+      loop do
+        print "Enter the date when the expense was made (YYYY-MM-DD):  "
+        str_date = gets.chomp
+        begin
+          expense_date = Date.parse(str_date)
+          break if expense_date <= Date.today
+          puts "Invalid date. Future dates are not allowed."
+        rescue ArgumentError
+          puts "Invalid date format. Please enter the date in YYYY-MM-DD format."
+        end
+      end
+  
+      # Validate amount input
+      expense_amount = nil
+      loop do
+        print "Enter the expense amount:  "
+        str_amount = gets.chomp
+        if str_amount == "0"
+          puts "Invalid amount. Amount cannot be 0."
+        elsif valid_amount?(str_amount)
+          expense_amount = str_amount.to_f
+          break
+        else
+          puts "Invalid amount. Please enter a valid number."
+        end
+      end
+  
+      # Validate item input
+      expense_item = nil 
+      loop do 
+        print "Enter the expense item:  "
+        expense_item = gets.chomp
+        if !expense_item.nil? && !expense_item.strip.empty?
+          break
+        else 
+          puts "Invalid expense item name. Please enter a valid name"
+        end
+      end
+      return expense_date, expense_item, expense_amount
+  end
+
   def create_expense 
     puts "Enter expense details"
 
-    # Validate date input
-    expense_date = nil
-    loop do
-      print "Enter the date when the expense was made (YYYY-MM-DD):  "
-      str_date = gets.chomp
-      begin
-        expense_date = Date.parse(str_date)
-        break if expense_date <= Date.today
-        puts "Invalid date. Future dates are not allowed."
-      rescue ArgumentError
-        puts "Invalid date format. Please enter the date in YYYY-MM-DD format."
-      end
-    end
-
-    # Validate amount input
-    expense_amount = nil
-    loop do
-      print "Enter the expense amount:  "
-      str_amount = gets.chomp
-      if str_amount == "0"
-        puts "Invalid amount. Amount cannot be 0."
-      elsif valid_amount?(str_amount)
-        expense_amount = str_amount.to_f
-        break
-      else
-        puts "Invalid amount. Please enter a valid number."
-      end
-    end
-
-    # Validate item input
-    expense_item = nil 
-    loop do 
-      print "Enter the expense item:  "
-      expense_item = gets.chomp
-      if !expense_item.nil? && !expense_item.strip.empty?
-        break
-      else 
-        puts "Invalid expense item name. Please enter a valid name"
-      end
-    end
+    expense_date, expense_item, expense_amount = get_valid_input
 
     conn = GetConnection.establish_database_connection
     expense = Expense.new(conn)
@@ -133,47 +138,8 @@ class ExpenseTracker
         puts "Invalid expense id. Please enter existing valid item id"
       end
     end
-    # Validate date input
-    new_expense_date = nil
-    loop do
-      print "Enter new date when the expense was made (YYYY-MM-DD):  "
-      str_date = gets.chomp
-      begin
-        new_expense_date = Date.parse(str_date)
-        break if new_expense_date <= Date.today
-        puts "Invalid date. Future dates are not allowed."
-      rescue ArgumentError
-        puts "Invalid date format. Please enter the date in YYYY-MM-DD format."
-      end
-    end
-
-    # Validate amount input
-    new_expense_amount = nil
-    loop do
-      print "Enter new expense amount:  "
-      str_amount = gets.chomp
-      if str_amount == "0"
-        puts "Invalid amount. Amount cannot be 0."
-      elsif valid_amount?(str_amount)
-        new_expense_amount = str_amount.to_f
-        break
-      else
-        puts "Invalid amount. Please enter a valid number."
-      end
-    end
-
-    # Validate item input
-    new_expense_item = nil 
-    loop do 
-      print "Enter new expense item:  "
-      new_expense_item = gets.chomp
-      if !new_expense_item.nil? && !new_expense_item.strip.empty?
-        break
-      else 
-        puts "Invalid expense item name. Please enter a valid name"
-      end
-    end 
-
+    
+    new_expense_date, new_expense_item, new_expense_amount = get_valid_input
     expense.update(user_input_id, new_expense_date, new_expense_item, new_expense_amount)
   end 
 
