@@ -45,7 +45,6 @@ def valid_amount?(amount_str)
 end
 
 def create_expense 
-  conn = GetConnection.establish_database_connection
   puts "Enter expense details"
 
   # Validate date input
@@ -89,6 +88,7 @@ def create_expense
     end
   end
 
+  conn = GetConnection.establish_database_connection
   expense = Expense.new(conn)
   expense.create(expense_date, expense_item, expense_amount)
   # puts expense.all.inspect
@@ -106,6 +106,76 @@ def read_expenses
   end 
 end
 
+def update_expense
+  conn = GetConnection.establish_database_connection
+  expense = Expense.new(conn)  
+
+  #validate expense item id 
+  user_input_id = nil 
+  loop do 
+    loop do
+      print "Enter the existing expense item id: "
+      user_input_id = gets.chomp
+    
+      # Validate if user_input_id is an integer
+      begin
+        Integer(user_input_id)
+        break
+      rescue ArgumentError
+        puts "Invalid expense id. Please enter a valid integer id."
+      end
+    end
+    if expense.id_exists?(user_input_id)
+      break 
+    else
+      puts "Invalid expense id. Please enter existing valid item id"
+    end
+  end
+  # Validate date input
+  new_expense_date = nil
+  loop do
+    print "Enter new date when the expense was made (YYYY-MM-DD):  "
+    str_date = gets.chomp
+    begin
+      new_expense_date = Date.parse(str_date)
+      break if new_expense_date <= Date.today
+      puts "Invalid date. Future dates are not allowed."
+    rescue ArgumentError
+      puts "Invalid date format. Please enter the date in YYYY-MM-DD format."
+    end
+  end
+
+  # Validate amount input
+  new_expense_amount = nil
+  loop do
+    print "Enter new expense amount:  "
+    str_amount = gets.chomp
+    if str_amount == "0"
+      puts "Invalid amount. Amount cannot be 0."
+    elsif valid_amount?(str_amount)
+      new_expense_amount = str_amount.to_f
+      break
+    else
+      puts "Invalid amount. Please enter a valid number."
+    end
+  end
+
+  # Validate item input
+  new_expense_item = nil 
+  loop do 
+    print "Enter new expense item:  "
+    new_expense_item = gets.chomp
+    if !new_expense_item.nil? && !new_expense_item.strip.empty?
+      break
+    else 
+      puts "Invalid expense item name. Please enter a valid name"
+    end
+  end 
+
+  expense.update(user_input_id, new_expense_date, new_expense_item, new_expense_amount)
+end 
+
+
 def handle_user_choice(user_choice) 
   case user_choice
   when 1
@@ -116,6 +186,7 @@ def handle_user_choice(user_choice)
     read_expenses
   when 3
     puts "Update Expense option selected."
+    update_expense
   when 4
     puts "Delete Expense option selected."
   when 5
