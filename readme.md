@@ -4,6 +4,20 @@
 
 The Expense Tracker CLI Application is designed to assist a single user in managing their expenses efficiently. It provides basic CRUD (Create, Read, Update, Delete) functionality to add, view, edit, and delete expense records via a command-line interface. This project aims to provide a user-friendly experience for tracking expenses.
 
+## Images of Final Application
+
+### Create and Read Operation
+
+![](./img/create_read_operation.png)
+
+### Update Operation
+
+![](./img/update_operation.png)
+
+### Delete Operation
+
+![](./img/delete_operation.png)
+
 ## Algorithm
 
 1. **Initialization:**
